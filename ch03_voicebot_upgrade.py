@@ -136,7 +136,7 @@ def init_session_state():
 
 def main():
 
-    st.image('images/ddc.jpg')
+    st.image('./images/ddc.jpg')
 
     init_session_state()
 
