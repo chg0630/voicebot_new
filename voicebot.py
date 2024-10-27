@@ -28,7 +28,24 @@ if os.path.isfile(file_path):
     df = pd.read_csv(file_path)
     df['embedding'] = df['embedding'].apply(ast.literal_eval)
 else:
-    st.error("임베딩 파일이 존재하지 않습니다.")
+    folder_path = './data' # data 폴더 경로
+    txt_files = [file for file in os.listdir(folder_path) if file.endswith('.txt')]  # txt 파일 목록
+
+    data = []
+    for file in txt_files:
+        txt_file_path = os.path.join(folder_path, file)
+        with open(txt_file_path, 'r', encoding='utf-8') as f:
+            text = f.read() # 파일 내용 읽기
+            data.append(text)
+
+    df = pd.DataFrame(data, columns=['text'])
+
+    # 데이터프레임의 text 열에 대해서 embedding을 추출
+    df['embedding'] = df.apply(lambda row: get_embedding(
+        row.text,
+        engine="text-embedding-ada-002"
+    ), axis=1)
+    df.to_csv(file_path, index=False, encoding='utf-8-sig')
 
 ##### 기능 함수 정의 #####
 
